@@ -80,43 +80,59 @@ saveGridPattern.addEventListener("click", async () => {
       },
     ],
   };
-  const handle = await window.showSaveFilePicker(options);
-  const writable = await handle.createWritable({ keepExistingData: true });
-  const file = await handle.getFile();
-  await writable.seek(file.size);
-  await writable.write(pathCellsGrid);
-  await writable.close();
+  try {
+    const handle = await window.showSaveFilePicker(options);
+    const writable = await handle.createWritable({ keepExistingData: true });
+    const file = await handle.getFile();
+    await writable.seek(file.size);
+    await writable.write(pathCellsGrid);
+    await writable.close();
+  } catch (err) {
+    if (err.name === "AbortError") {
+      console.log("User has cancelled the Save File operation");
+    } else {
+      console.error(err);
+    }
+  }
 });
 
 loadGridPattern.addEventListener("click", async () => {
-  const [handle] = await window.showOpenFilePicker({
-    multiple: false,
-    startIn: "desktop",
-    types: [
-      {
-        description: "grid coordinates in json array format",
-        accept: { "application/json": [".txt"] },
-      },
-    ],
-  });
-  const file = await handle.getFile();
-  const text = await file.text();
-
-  let jsonExtract;
-
   try {
-    jsonExtract = JSON.parse(text);
-  } catch {
-    console.error("Selected file's content is not in a valid JSON format");
+    const [handle] = await window.showOpenFilePicker({
+      multiple: false,
+      startIn: "desktop",
+      types: [
+        {
+          description: "grid coordinates in json array format",
+          accept: { "application/json": [".txt"] },
+        },
+      ],
+    });
+    const file = await handle.getFile();
+    const text = await file.text();
+
+    let jsonExtract;
+
+    try {
+      jsonExtract = JSON.parse(text);
+    } catch {
+      console.error("Selected file's content is not in a valid JSON format");
+    }
+    [...pathCells].forEach((selCell) => {
+      selCell.classList.remove("pathCell");
+    });
+    jsonExtract.forEach((mainCoorArr) => {
+      mainGridContainer.children[mainCoorArr[0]].children[
+        mainCoorArr[1]
+      ].classList.add("pathCell");
+    });
+  } catch (err) {
+    if (err.name === "AbortError") {
+      console.log("User has cancelled the Select File operation ");
+    } else {
+      console.error(err);
+    }
   }
-  [...pathCells].forEach((selCell) => {
-    selCell.classList.remove("pathCell");
-  });
-  jsonExtract.forEach((mainCoorArr) => {
-    mainGridContainer.children[mainCoorArr[0]].children[
-      mainCoorArr[1]
-    ].classList.add("pathCell");
-  });
 });
 
 // #endregion to find all the selected cells
