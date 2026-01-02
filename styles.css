@@ -1,0 +1,48 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 90vh;
+  background-color: green;
+}
+
+header {
+  background-color: magenta;
+}
+
+#mainGridContainer {
+  height: 500px;
+  width: 500px;
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+}
+
+.rows {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.cells {
+  height: 100%;
+  width: 100%;
+  border: solid black 1px;
+}
+
+.pathCell {
+  background-color: yellow;
+}
+
+#designBtnsContainer,
+#designTriggerBtnsContainer {
+  width: 500px;
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 15px;
+  font-weight: bold;
+}
